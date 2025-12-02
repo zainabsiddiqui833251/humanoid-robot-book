@@ -1,0 +1,31 @@
+.editorContainer {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--ifm-color-primary-lightest);
+  border-radius: var(--ifm-border-radius);
+  overflow: hidden;
+}
+
+.executeButton {
+  background-color: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base-inverse);
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.executeButton:hover {
+  background-color: var(--ifm-color-primary-dark);
+}
+
+.outputArea {
+  background-color: var(--docusaurus-secondary-background-color);
+  padding: 10px;
+  border-top: 1px solid var(--ifm-color-primary-lightest);
+  margin-bottom: 0;
+  overflow-x: auto;
+  color: var(--ifm-font-color-base);
+}

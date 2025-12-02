@@ -1,0 +1,103 @@
+.outerContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.toggleButton {
+  background-color: var(--docusaurus-color-primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.toggleButton:hover {
+  background-color: var(--docusaurus-color-primary-dark);
+}
+
+.chatbotContainer {
+  width: 350px;
+  height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--docusaurus-surface-background-color);
+  z-index: 999; /* Slightly lower z-index than toggleButton */
+  position: absolute; /* Position relative to outerContainer */
+  bottom: 60px; /* Adjust to be above the toggle button */
+  right: 0;
+}
+
+.messages {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+  border-bottom: 1px solid #eee;
+}
+
+.message {
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 15px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.user {
+  background-color: var(--docusaurus-color-primary);
+  color: white;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.bot {
+  background-color: var(--docusaurus-secondary-background-color);
+  color: var(--docusaurus-text-color);
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+.inputArea {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #eee;
+}
+
+.inputArea input {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 8px 12px;
+  margin-right: 10px;
+  font-size: 14px;
+  background-color: var(--docusaurus-search-background-color);
+  color: var(--docusaurus-text-color);
+}
+
+.inputArea button {
+  background-color: var(--docusaurus-color-primary);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.inputArea button:hover {
+  opacity: 0.9;
+}

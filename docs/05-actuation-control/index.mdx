@@ -1,0 +1,100 @@
+# 05 - Actuation and Control
+
+The ability of a humanoid robot to move gracefully, maintain balance, and interact with its environment stems from sophisticated actuation and control systems. This chapter dives into the mechanisms that translate high-level commands into physical motion.
+
+## Motor Control Strategies
+
+Precise control of individual motors is fundamental to achieving desired robot movements. Several strategies are employed:
+
+*   **PID (Proportional-Integral-Derivative) Control:** A widely used feedback control loop that calculates an "error" value as the difference between a desired setpoint and a measured process variable. The controller attempts to minimize the error by adjusting the control output.
+    *   **P (Proportional):** Responds to the current error.
+    *   **I (Integral):** Addresses accumulated past errors.
+    *   **D (Derivative):** Predicts future errors based on the rate of change.
+
+    PID controllers are often tuned to achieve a balance between responsiveness, overshoot, and stability.
+
+*   **Impedance Control:** A control strategy that regulates the mechanical impedance (relationship between force and motion) of the robot's end-effector. Instead of precisely controlling position or force, it controls how the robot 'reacts' to external forces. This is crucial for compliant interaction with humans or unknown environments, allowing the robot to yield gracefully to contact.
+
+*   **Admittance Control:** Similar to impedance control, but it works by mapping external forces sensed by the robot into desired motion commands. If an external force pushes the robot, admittance control determines how much the robot should move in response.
+
+## Joint Space vs. Task Space Control
+
+Robot control can be formulated in different conceptual spaces:
+
+*   **Joint Space Control:** Commands are directly given in terms of desired joint angles, velocities, or torques. This is simpler to implement for individual joints but can make it difficult to achieve desired end-effector trajectories in Cartesian space.
+    *   *Example:* "Move joint 3 to 90 degrees."
+
+*   **Task Space Control (Cartesian Space Control):** Commands are given in terms of desired position and orientation of the end-effector (e.g., the robot's hand or foot) in 3D space. The control system then uses inverse kinematics (and Jacobian matrices for velocity/force control) to determine the necessary joint commands.
+    *   *Example:* "Move the right hand to (X, Y, Z) position with a specific orientation."
+
+Task space control is more intuitive for human operators and for performing tasks in the real world, but it is computationally more intensive.
+
+## Walking and Balance Control
+
+Bipedal locomotion is one of the most challenging aspects of humanoid robotics, requiring sophisticated control algorithms to maintain balance and achieve stable walking.
+
+*   **Zero Moment Point (ZMP):** A fundamental concept in bipedal locomotion. The ZMP is the point on the ground where the total moment of all forces acting on the robot (including gravity and inertial forces) is zero. For stable walking, the ZMP must remain within the robot's support polygon (the area on the ground enclosed by the feet in contact).
+
+*   **Capture Point:** An extension of ZMP, the Capture Point is a dynamic stability criterion that predicts where the robot would need to step to instantaneously stop its fall. Controlling the Capture Point allows for more dynamic and robust walking, even over uneven terrain.
+
+*   **Model Predictive Control (MPC):** An advanced control strategy that uses a dynamic model of the robot to predict its future behavior and optimize control inputs over a receding horizon. MPC is very effective for dynamic balance and trajectory generation in complex systems like humanoids.
+
+## ROS-based Control Examples with Simulated Robots
+
+ROS (Robot Operating System) provides powerful tools and frameworks for robot control, especially with simulation environments like Gazebo and motion planning libraries like MoveIt.
+
+**Example: Basic Joint Control in Gazebo (ROS Python Script)**
+
+This example demonstrates how to control a simulated robot joint (e.g., `joint_1`) in Gazebo using ROS topics. It assumes a simulated robot is running in Gazebo with `ros_control` set up for joint position interfaces.
+
+```python
+#!/usr/bin/env python
+
+import rospy
+from std_msgs.msg import Float64
+import time
+
+def joint_controller():
+    rospy.init_node('simple_joint_controller', anonymous=True)
+    # Publisher to command a joint. Replace /robot_name/joint_1_controller/command with your actual topic
+    joint_pub = rospy.Publisher('/my_humanoid/joint_1_controller/command', Float64, queue_size=10)
+
+    rospy.loginfo("Waiting for joint controller publisher...")
+    time.sleep(1) # Give some time for the publisher to connect
+
+    rate = rospy.Rate(1) # 1 Hz
+
+    joint_position = 0.0
+    increment = 0.5
+    max_pos = 1.57 # ~90 degrees
+    min_pos = -1.57 # ~-90 degrees
+
+    while not rospy.is_shutdown():
+        rospy.loginfo(f"Setting joint_1 position to: {joint_position:.2f}")
+        joint_pub.publish(joint_position)
+
+        joint_position += increment
+
+        if joint_position > max_pos or joint_position < min_pos:
+            increment *= -1 # Reverse direction
+            joint_position += 2 * increment # Correct position after reversal
+
+        rate.sleep()
+
+if __name__ == '__main__':
+    try:
+        joint_controller()
+    except rospy.ROSInterruptException:
+        pass
+```
+
+**To run this example, you would typically:**
+
+1.  Have a Docusaurus-compatible robot model (URDF) loaded in Gazebo.
+2.  Have `ros_control` set up with a `JointPositionController` for `joint_1` (defined in a `controllers.yaml` and loaded via a launch file).
+3.  Run `roscore`.
+4.  Launch your robot in Gazebo: `roslaunch my_robot_gazebo my_robot.launch`
+5.  Launch the controller: `roslaunch my_robot_control my_robot_control.launch`
+6.  Run this Python script: `rosrun your_package simple_joint_controller.py`
+
+These control strategies, combined with robust actuation, allow humanoid robots to execute a wide array of complex physical tasks, from simple movements to dynamic walking and interaction.

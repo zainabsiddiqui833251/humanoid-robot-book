@@ -1,0 +1,90 @@
+# Python Environment Setup
+
+This appendix guides you through setting up a robust Python development environment, which is essential for working with the code examples and tools used throughout this book on humanoid robotics.
+
+## 1. Installing Python
+
+Many Linux distributions come with Python pre-installed. However, it's often a system Python, and it's generally best to install a specific version for development to avoid conflicts.
+
+### On Ubuntu/Debian:
+
+1.  **Update package list:**
+    ```bash
+    sudo apt update
+    sudo apt upgrade
+    ```
+
+2.  **Install Python 3.9 (or a preferred version):**
+    ```bash
+    sudo apt install python3.9 python3.9-venv python3-pip
+    ```
+    Replace `python3.9` with your desired version if different. `python3.9-venv` is crucial for creating virtual environments.
+
+3.  **Verify installation:**
+    ```bash
+    python3.9 --version
+    pip3 --version
+    ```
+
+## 2. Managing Python Environments with `venv`
+
+Virtual environments are critical for isolating project dependencies. This prevents conflicts between different projects that might require different versions of the same library.
+
+1.  **Create a virtual environment:**
+    Navigate to your project directory (e.g., `~/humanoid_robot_code`) and create a virtual environment named `.venv`:
+    ```bash
+    cd ~/humanoid_robot_code
+    python3.9 -m venv .venv
+    ```
+    You can choose any name instead of `.venv`, but `.`-prefixed directories are often hidden and a common convention.
+
+2.  **Activate the virtual environment:**
+    ```bash
+    source .venv/bin/activate
+    ```
+    You'll see `(.venv)` or your chosen environment name appear in your terminal prompt, indicating that the virtual environment is active.
+
+3.  **Deactivate the virtual environment:**
+    When you're done working on the project, you can deactivate the environment:
+    ```bash
+    deactivate
+    ```
+
+## 3. Installing Python Packages with `pip`
+
+Once your virtual environment is active, you can install project-specific Python packages using `pip`.
+
+1.  **Install common robotics/ML packages:**
+    ```bash
+    pip install numpy scipy matplotlib ipython jupyterlab
+    ```
+    *   `numpy`: Fundamental package for numerical computing.
+    *   `scipy`: Library for scientific and technical computing.
+    *   `matplotlib`: For plotting and visualization.
+    *   `ipython`: Enhanced interactive Python shell.
+    *   `jupyterlab`: Web-based interactive development environment (notebooks).
+
+2.  **Install deep learning frameworks (if needed):**
+    *   **TensorFlow:**
+        ```bash
+        pip install tensorflow
+        ```
+    *   **PyTorch:**
+        ```bash
+        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+        # For GPU versions, refer to PyTorch official installation guide.
+        ```
+
+3.  **Generate a `requirements.txt` file:**
+    It's good practice to list all project dependencies in a `requirements.txt` file so others (or your future self) can easily set up the environment.
+    ```bash
+    pip freeze > requirements.txt
+    ```
+
+4.  **Install packages from `requirements.txt`:**
+    To set up a new environment with the same dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+By following these steps, you will have a well-organized and reproducible Python development environment for your humanoid robotics projects.

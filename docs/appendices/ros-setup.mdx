@@ -1,0 +1,109 @@
+# ROS Installation and Basic Setup Tutorial
+
+This appendix provides a step-by-step guide to installing and setting up the Robot Operating System (ROS) on a Linux environment, along with basic configuration for a humanoid robot project.
+
+## 1. Choosing a ROS Distribution
+
+ROS has several distributions. For most modern humanoid robotics projects, we recommend a long-term support (LTS) distribution. As of this writing, **ROS Noetic Ninjemys** (based on Ubuntu 20.04 Focal Fossa) or newer ROS 2 distributions are common. This tutorial will focus on ROS Noetic.
+
+## 2. Preparing Your Ubuntu System
+
+Before installing ROS, ensure your Ubuntu system is up-to-date and configured to accept software from `packages.ros.org`.
+
+1.  **Configure your Ubuntu repositories:**
+    ```bash
+    sudo apt update
+    sudo apt install -y software-properties-common
+    sudo add-apt-repository universe
+    ```
+
+2.  **Set up your sources.list:**
+    ```bash
+    sudo apt update && sudo apt install curl -y
+    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+    ```
+    For ROS Noetic (Ubuntu 20.04), you would use:
+    ```bash
+    echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/ros-latest.list
+    ```
+
+## 3. Installing ROS Noetic
+
+Now, you can install the full desktop-version of ROS Noetic, which includes ROS, `rqt`, `rviz`, robot-generic libraries, and 2D/3D simulators.
+
+1.  **Update your package list:**
+    ```bash
+    sudo apt update
+    ```
+
+2.  **Install ROS Noetic Desktop-Full:**
+    ```bash
+    sudo apt install -y ros-noetic-desktop-full
+    ```
+    This may take a while, depending on your internet connection.
+
+## 4. Initializing rosdep
+
+`rosdep` enables you to easily install system dependencies for source packages. It's essential for compiling packages.
+
+1.  **Initialize `rosdep`:**
+    ```bash
+    sudo rosdep init
+    rosdep update
+    ```
+    If `rosdep init` fails, try `sudo rm /etc/ros/rosdep/sources.list.d/20-default.list` and then `sudo rosdep init` again.
+
+## 5. Setting up Your ROS Environment
+
+To use ROS commands in a new terminal, you need to source the ROS setup script.
+
+1.  **Source the setup script:**
+    ```bash
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+    source ~/.bashrc
+    ```
+    This adds the sourcing command to your `.bashrc` file, so it runs automatically for every new terminal session.
+
+## 6. Creating a ROS Workspace
+
+A ROS workspace is a directory where you store your ROS packages. `catkin` is the build system for ROS 1.
+
+1.  **Create a `catkin` workspace:**
+    ```bash
+    mkdir -p ~/catkin_ws/src
+    cd ~/catkin_ws/
+    catkin_make
+    ```
+    This creates an empty workspace. The `catkin_make` command will generate `build/` and `devel/` directories.
+
+2.  **Source your workspace:**
+    ```bash
+    echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+    source ~/.bashrc
+    ```
+    It's important to source your workspace's `setup.bash` file *after* the main ROS setup file, as it overlays your workspace packages on top of the default ROS installation.
+
+## 7. Verifying Your Installation
+
+You can verify your ROS installation by running some basic ROS commands.
+
+1.  **Start `roscore`:**
+    ```bash
+    roscore
+    ```
+    This is the master node that provides naming and registration services to the rest of the ROS graph. Keep this terminal open.
+
+2.  **In a new terminal, check active ROS topics:**
+    ```bash
+    rostopic list
+    ```
+    You should see at least `/rosout` and `/rosout_agg`.
+
+3.  **Check available ROS nodes:**
+    ```bash
+    rosnode list
+    ```
+    You should see `/rosout`.
+
+Congratulations! You have successfully installed and set up ROS Noetic. You are now ready to start developing your humanoid robot applications.

@@ -1,0 +1,90 @@
+# 04 - Sensors and Perception
+
+Perception is a critical capability for humanoid robots, allowing them to understand their environment, recognize objects, detect humans, and navigate effectively. This chapter explores the diverse array of sensors used and the techniques for processing their data.
+
+## Vision Systems
+
+Vision is arguably the most important exteroceptive sense for humanoids, mimicking human sight to provide rich environmental information.
+
+*   **Monocular Cameras:** A single camera provides 2D images. Used for object detection, recognition, and tracking (with AI/ML models), and visual odometry (estimating motion from camera frames).
+*   **Stereo Cameras:** Two cameras placed side-by-side, similar to human eyes, allow for depth perception by triangulating points from two different viewpoints. Essential for 3D mapping and obstacle avoidance.
+*   **Depth Cameras (RGB-D):** Combine a standard RGB camera with a depth sensor (e.g., infrared projector and sensor, time-of-flight). Popular examples include Intel RealSense and Microsoft Kinect. They directly provide color images along with a depth map for each pixel.
+
+**Perception Techniques for Vision:**
+
+*   **Object Recognition and Tracking:** Using deep learning models (e.g., CNNs like YOLO, Faster R-CNN) to identify and localize objects in the robot's field of view.
+*   **Human Detection and Pose Estimation:** Specialized models to detect humans and estimate their joint positions, crucial for human-robot interaction and collaboration.
+*   **Simultaneous Localization and Mapping (SLAM):** Combining visual information with odometry to build a map of an unknown environment while simultaneously localizing the robot within that map.
+
+**ROS Example: Camera Feed Processing (Python)**
+
+This basic ROS Python node subscribes to a camera topic (e.g., `/camera/image_raw`), converts the image, and prints its dimensions. In a real application, you would perform more complex image processing here (e.g., OpenCV operations).
+
+```python
+#!/usr/bin/env python
+
+import rospy
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import cv2
+
+def image_callback(msg):
+    rospy.loginfo("Received an image!")
+    try:
+        # Convert your ROS Image message to OpenCV format
+        bridge = CvBridge()
+        cv_image = bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
+
+        # Process the image (e.g., print dimensions)
+        (rows, cols, channels) = cv_image.shape
+        rospy.loginfo(f"Image dimensions: {cols}x{rows}")
+
+        # Display the image (optional, requires a display)
+        # cv2.imshow("Camera Feed", cv_image)
+        # cv2.waitKey(1)
+
+    except Exception as e:
+        rospy.logerr(e)
+
+def camera_subscriber():
+    rospy.init_node('camera_subscriber_node', anonymous=True)
+    rospy.Subscriber("/camera/image_raw", Image, image_callback)
+    rospy.spin()
+
+if __name__ == '__main__':
+    try:
+        camera_subscriber()
+    except rospy.ROSInterruptException:
+        pass
+```
+
+## Force/Torque Sensors
+
+Force/torque (F/T) sensors measure the forces and torques applied at specific points, typically wrists, ankles, or the base of the robot. They are essential for:
+
+*   **Compliant Control:** Allowing the robot to interact softly with the environment or humans, rather than rigidly maintaining a position.
+*   **Manipulation:** Detecting contact, slippage, and applying appropriate grasp forces.
+*   **Balance and Walking:** Measuring ground reaction forces to maintain stability during bipedal locomotion.
+
+## Tactile Sensors
+
+Tactile sensors provide information about physical contact, pressure distribution, and even texture. They are typically arrays of small pressure-sensitive elements embedded in robot fingertips, palms, or other body parts.
+
+*   **Applications:** Improving grasping robustness, detecting unexpected contact for safety, and enabling sensitive human-robot physical interaction.
+
+## Lidar (Light Detection and Ranging)
+
+Lidar sensors emit laser pulses and measure the time it takes for the pulses to return, creating highly accurate 2D or 3D point clouds of the environment. They are robust to lighting conditions and provide precise distance measurements.
+
+*   **Applications:** Environmental mapping, obstacle detection and avoidance, localization (determining the robot's position within a map), and navigation.
+
+## Data Processing and Fusion Techniques
+
+Raw sensor data is often noisy, incomplete, or in different formats. **Sensor fusion** techniques combine data from multiple sensors to create a more robust, accurate, and comprehensive understanding of the robot's state and environment.
+
+*   **Kalman Filters / Extended Kalman Filters (EKF):** Widely used for state estimation, combining noisy sensor measurements with a dynamic model of the robot to get a more accurate estimate of position, velocity, and orientation.
+*   **Particle Filters:** Effective for localization in complex, non-linear environments.
+*   **Probabilistic Robotics:** Frameworks that deal with uncertainty in sensing and actuation, forming the basis for many modern navigation and perception algorithms.
+*   **Transformation Trees (TF in ROS):** ROS provides a powerful `tf` (transformations) system to keep track of multiple coordinate frames and transform data between them. This is crucial for combining sensor data from different parts of the robot.
+
+By effectively integrating and processing data from this diverse range of sensors, humanoid robots can build a rich internal model of their world, enabling intelligent and adaptive behavior.

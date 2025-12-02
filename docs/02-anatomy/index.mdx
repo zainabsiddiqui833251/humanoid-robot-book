@@ -1,0 +1,52 @@
+# 02 - Humanoid Robot Anatomy
+
+The anatomy of a humanoid robot is a complex interplay of mechanical structures, powerful actuators, sophisticated sensors, and efficient power systems. Each component is meticulously designed to mimic, or even surpass, the capabilities of the human body.
+
+## Mechanical Structure: Links and Joints
+
+Like the human skeleton, humanoid robots are built with a series of rigid **links** connected by **joints**. The links represent the segments of the robot (e.g., upper arm, forearm, thigh, shin), while the joints allow for relative motion between these links.
+
+*   **Links:** Typically made from lightweight yet strong materials like aluminum alloys, carbon fiber, or plastics (for rapid prototyping). Their design impacts the robot's weight, inertia, and overall dynamic performance.
+*   **Joints:** These are the articulation points that enable movement. Common types include:
+    *   **Revolute Joints (Rotational):** Allow rotation around a single axis, similar to a knee or elbow joint. Most robot joints are revolute.
+    *   **Prismatic Joints (Translational):** Allow linear movement along a single axis, less common in humanoids but found in some specialized applications.
+
+The number of joints and their arrangement define the robot's **Degrees of Freedom (DoF)**. A typical humanoid robot might have 20-40 DoF, distributed across its neck, shoulders, elbows, wrists, hips, knees, and ankles, allowing for a wide range of movements necessary for human-like tasks.
+
+## Actuators: The Muscles of a Humanoid
+
+Actuators are the components responsible for generating motion at the joints, analogous to biological muscles. They convert electrical, hydraulic, or pneumatic energy into mechanical force or torque.
+
+*   **Electric Motors:** The most common type due to their precision, ease of control, and clean operation.
+    *   **DC Motors:** Simple, robust, but can be less efficient for continuous high torque.
+    *   **Brushless DC (BLDC) Motors:** Highly efficient, offer good power-to-weight ratio, and are very common in advanced humanoids.
+    *   **Servo Motors:** Integrated with a gearbox and a feedback sensor (encoder) for precise position control. High-quality servos are essential for humanoid joints.
+*   **Hydraulic Actuators:** Offer very high power density and stiffness, ideal for dynamic and powerful robots (e.g., Boston Dynamics' Atlas). They use incompressible fluid under pressure.
+*   **Pneumatic Actuators:** Use compressed air. Lighter and faster than hydraulics but typically less precise and powerful, often used for grippers or simpler movements.
+
+**Gearboxes** (e.g., harmonic drives, cycloidal drives) are almost always coupled with motors to increase torque and reduce speed, as direct-drive motors rarely have enough torque for humanoid applications.
+
+## Sensors: Perceiving the World
+
+Sensors provide the robot with information about its internal state and external environment, crucial for perception, control, and interaction.
+
+*   **Proprioceptive Sensors (Internal State):**
+    *   **Encoders:** Measure joint angles or rotational positions (e.g., optical, magnetic encoders).
+    *   **Potentiometers:** Measure linear or angular displacement.
+    *   **Force/Torque Sensors:** Located at wrists, ankles, or feet to measure contact forces and torques, essential for balance and manipulation.
+    *   **Inertial Measurement Units (IMUs):** Contain accelerometers and gyroscopes (sometimes magnetometers) to measure orientation, angular velocity, and linear acceleration. Critical for balance and whole-body control.
+*   **Exteroceptive Sensors (External Environment):**
+    *   **Cameras:** Provide visual information for object recognition, navigation, human detection, and facial recognition (e.g., monocular, stereo, depth cameras like Intel RealSense or Microsoft Kinect).
+    *   **Lidar (Light Detection and Ranging):** Uses pulsed laser to measure distances to create 2D or 3D maps of the environment.
+    *   **Ultrasonic Sensors:** Measure distances using sound waves, useful for short-range obstacle detection.
+    *   **Tactile Sensors:** Arrays of pressure sensors on fingertips or body surfaces to detect contact, pressure distribution, and texture, enhancing manipulation and interaction safety.
+
+## Power Systems: The Energy Source
+
+Humanoid robots require significant power to operate their many actuators and sensors. The power system is a critical design consideration, balancing energy density, weight, and runtime.
+
+*   **Batteries:** Lithium-ion polymer (LiPo) batteries are commonly used due to their high energy density and relatively low weight. Battery management systems (BMS) are essential for safety and optimal performance.
+*   **Power Distribution:** Complex circuitry is needed to distribute power efficiently and safely to all components (motors, sensors, computing units), often involving DC-DC converters and voltage regulators.
+*   **Wired Power (Tethered):** For research platforms or stationary humanoids, tethered power can provide unlimited runtime and higher power delivery, avoiding battery weight limitations.
+
+Understanding the intricate design and function of each anatomical component is fundamental to grasping how humanoid robots move, perceive, and interact with the world.

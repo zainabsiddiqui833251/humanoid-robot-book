@@ -1,0 +1,180 @@
+import LiveCodeEditor from '@site/src/components/LiveCodeEditor';
+
+# 03 - Kinematics and Dynamics
+
+Kinematics and dynamics are fundamental concepts in robotics, crucial for understanding and controlling the movement of humanoid robots. Kinematics describes motion without considering the forces, while dynamics incorporates forces and torques.
+
+## Kinematics: Describing Motion
+
+Kinematics deals with the geometric aspects of robot motion, focusing on the position, velocity, and acceleration of the robot's links and joints.
+
+### Forward Kinematics
+
+**Forward kinematics (FK)** is the process of calculating the position and orientation of the end-effector (e.g., hand, foot) given the joint angles of the robot. For a robot with `n` joints, if we know all `n` joint angles, FK tells us where the end-effector is in 3D space.
+
+Mathematically, FK can be represented by a transformation matrix (e.g., using Denavit-Hartenberg parameters) that maps the joint space to the Cartesian space.
+
+**Example: 2-DOF Planar Arm (Python)**
+
+Let's consider a simple 2-Degrees of Freedom (DoF) planar arm with two links of lengths `L1` and `L2`. The joint angles are `theta1` and `theta2` (measured from the previous link).
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def forward_kinematics_2dof(L1, L2, theta1_deg, theta2_deg):
+    theta1 = np.deg2rad(theta1_deg)
+    theta2 = np.deg2rad(theta2_deg)
+
+    # Joint 1 position (origin)
+    x0, y0 = 0, 0
+
+    # Joint 2 position
+    x1 = L1 * np.cos(theta1)
+    y1 = L1 * np.sin(theta1)
+
+    # End-effector position
+    x2 = x1 + L2 * np.cos(theta1 + theta2)
+    y2 = y1 + L2 * np.sin(theta1 + theta2)
+
+    return (x0, y0), (x1, y1), (x2, y2)
+
+# Parameters
+L1 = 1.0  # length of first link
+L2 = 0.8  # length of second link
+theta1_deg = 30 # degrees
+theta2_deg = 60 # degrees
+
+# Calculate FK
+joint0, joint1, end_effector = forward_kinematics_2dof(L1, L2, theta1_deg, theta2_deg)
+
+print(f"Joint 0: {joint0}")
+print(f"Joint 1: {joint1}")
+print(f"End-effector: {end_effector}")
+
+# Plotting (requires matplotlib)
+plt.figure(figsize=(6, 6))
+plt.plot([joint0[0], joint1[0]], [joint0[1], joint1[1]], 'ro-', linewidth=2, label='Link 1')
+plt.plot([joint1[0], end_effector[0]], [joint1[1], end_effector[1]], 'go-', linewidth=2, label='Link 2')
+plt.plot(end_effector[0], end_effector[1], 'bx', markersize=10, label='End-effector')
+
+plt.xlim(-L1 - L2, L1 + L2)
+plt.ylim(-L1 - L2, L1 + L2)
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.title('2-DoF Planar Arm Forward Kinematics')
+plt.grid(True)
+plt.legend()
+plt.gca().set_aspect('equal', adjustable='box')
+plt.show()
+```
+
+### Try it yourself!
+
+<LiveCodeEditor initialCode={`L1 = 1.0
+L2 = 0.8
+theta1_deg = 45 # degrees
+theta2_deg = 90 # degrees
+
+# Call the function (assume forward_kinematics_2dof is defined elsewhere or paste it in)
+# x0, y0, x1, y1, x2, y2 = forward_kinematics_2dof(L1, L2, theta1_deg, theta2_deg)
+print(f"Hello from the live editor!")
+print(f"Input angles: {theta1_deg}, {theta2_deg}")`}/>
+
+### Inverse Kinematics
+
+**Inverse kinematics (IK)** is the opposite problem: given a desired position and orientation of the end-effector, calculate the joint angles required to achieve that pose. IK is significantly more complex than FK, often having multiple solutions (redundancy), no solutions (reachability limits), or singularities.
+
+IK is crucial for task-oriented control, where a robot needs to reach a specific point in space. Solutions often involve iterative numerical methods or analytical solutions for simpler robots.
+
+**Example: 2-DOF Planar Arm IK (Analytical - Python)**
+
+For a 2-DoF planar arm, an analytical solution exists.
+
+```python
+import numpy as np
+
+def inverse_kinematics_2dof(L1, L2, target_x, target_y):
+    # Calculate distance from origin to target
+    D_squared = target_x**2 + target_y**2
+    D = np.sqrt(D_squared)
+
+    # Check if target is reachable
+    if D > (L1 + L2) or D < abs(L1 - L2):
+        print("Target out of reach.")
+        return None, None
+
+    # Calculate theta2 (using law of cosines)
+    cos_theta2 = (D_squared - L1**2 - L2**2) / (2 * L1 * L2)
+    if abs(cos_theta2) > 1:
+        print("Calculation error for theta2. Adjust target or link lengths.")
+        return None, None
+    theta2 = np.arctan2(np.sqrt(1 - cos_theta2**2), cos_theta2) # Elbow up solution
+    # Alternative: elbow down solution: theta2 = np.arctan2(-np.sqrt(1 - cos_theta2**2), cos_theta2)
+
+    # Calculate theta1
+    alpha = np.arctan2(target_y, target_x)
+    beta = np.arctan2(L2 * np.sin(theta2), L1 + L2 * np.cos(theta2))
+    theta1 = alpha - beta
+
+    return np.rad2deg(theta1), np.rad2deg(theta2)
+
+# Parameters
+L1 = 1.0
+L2 = 0.8
+target_x = 1.5
+target_y = 0.5
+
+# Calculate IK
+theta1_ik, theta2_ik = inverse_kinematics_2dof(L1, L2, target_x, target_y)
+
+if theta1_ik is not None and theta2_ik is not None:
+    print(f"Target ({target_x}, {target_y})")
+    print(f"Calculated Joint Angles: theta1 = {theta1_ik:.2f} degrees, theta2 = {theta2_ik:.2f} degrees")
+
+    # Verify with FK
+    _, _, fk_end_effector = forward_kinematics_2dof(L1, L2, theta1_ik, theta2_ik)
+    print(f"FK verification end-effector: ({fk_end_effector[0]:.2f}, {fk_end_effector[1]:.2f})")
+```
+
+### Jacobians
+
+The **Jacobian matrix** is a fundamental tool in robotics that relates joint velocities to end-effector velocities (both linear and angular). It is the partial derivative of the forward kinematics equations with respect to each joint variable.
+
+*   `v_e = J * dot_q`
+    *   `v_e`: End-effector velocity (linear and angular)
+    *   `J`: Jacobian matrix
+    *   `dot_q`: Joint velocities
+
+The Jacobian is essential for:
+*   **Velocity Control:** Directly mapping desired end-effector velocities to required joint velocities.
+*   **Singularity Analysis:** Points where the Jacobian loses rank (determinant is zero) are called singularities, representing configurations where the robot loses one or more DoF and cannot move its end-effector in certain directions.
+*   **Force Mapping:** The transpose of the Jacobian maps forces/torques from the end-effector to the joints (`tau = J^T * F_e`).
+
+## Dynamics: Forces, Torques, and Motion
+
+Dynamics deals with the study of motion considering the forces and torques that cause it. This is crucial for controlling the robot's acceleration, handling disturbances, and understanding energy consumption.
+
+### Statics
+
+**Statics** is a special case of dynamics where the robot is in equilibrium (no acceleration). It focuses on the forces and torques required to hold a robot in a specific pose or to move it very slowly.
+
+For a robot in static equilibrium, the sum of all forces and torques acting on each link is zero. This is particularly important for humanoid robots in standing or quasi-static walking phases.
+
+### Dynamics Equations
+
+The full dynamic equations of motion for a robot are often complex and non-linear. They typically take the form:
+
+`M(q) * dot_dot_q + C(q, dot_q) * dot_q + G(q) = tau`
+
+*   `q`: Joint angles vector
+*   `dot_q`: Joint velocities vector
+*   `dot_dot_q`: Joint accelerations vector
+*   `M(q)`: Mass (or inertia) matrix, which depends on the joint configuration.
+*   `C(q, dot_q)`: Coriolis and centrifugal forces matrix.
+*   `G(q)`: Gravity vector, dependent on joint configuration.
+*   `tau`: Joint torques generated by actuators.
+
+Solving or simulating these equations allows engineers to predict how a robot will move under specific torques or to calculate the torques required for desired movements. This is fundamental for advanced control strategies like impedance control and model predictive control.
+
+Understanding both kinematics and dynamics provides the theoretical foundation for designing, simulating, and controlling the complex movements of humanoid robots.
