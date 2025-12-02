@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx @docusaurus/theme swizzle:*)",
+      "Bash(npm run build)",
+      "Bash(npm run start)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(npm run start:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
