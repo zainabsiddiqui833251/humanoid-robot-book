@@ -2,34 +2,29 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+// Docusaurus configuration for GitHub Pages deployment
 
 const config: Config = {
   title: 'Humanoid Robots: A Comprehensive Guide',
   tagline: 'Exploring the Future of Human-like Robotics',
   favicon: 'img/favicon.ico',
 
-  // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
+  // Future flags
   future: {
-    v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    v4: true,
   },
 
-  // Set the production url of your site here
-  url: 'https://humanoid-robots-book.example.com',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  // Production URL
+  url: 'https://zainabsiddiqui833251.github.io', // GitHub Pages URL
+  baseUrl: '/humanoid-robot-book/',              // Repo name as path
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'your-organization', // Replace with your GitHub org/user name.
-  projectName: 'humanoid-robots-book', // Replace with your repo name.
+  // GitHub pages deployment config
+  organizationName: 'zainabsiddiqui833251', // GitHub username
+  projectName: 'humanoid-robot-book',       // Repo name
 
   onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -42,10 +37,6 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: '/docs',
-          // Set the home page for your docs to 'introduction'
-          // This is necessary because we renamed 'intro' to 'introduction'
-          // and the default docusaurus config expects 'intro' as the home page
-          // Please change this to your repo.
         },
         blog: {
           showReadingTime: true,
@@ -53,8 +44,6 @@ const config: Config = {
             type: ['rss', 'atom'],
             xslt: true,
           },
-          // Please change this to your repo.
-          // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn',
@@ -67,7 +56,6 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
       respectPrefersColorScheme: true,
@@ -75,7 +63,7 @@ const config: Config = {
     navbar: {
       title: 'Humanoid Robots',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Humanoid Robots Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -85,9 +73,8 @@ const config: Config = {
           position: 'left',
           label: 'Book',
         },
-        // {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/your-organization/humanoid-robots-book',
+          href: 'https://github.com/zainabsiddiqui833251/humanoid-robot-book',
           label: 'GitHub',
           position: 'right',
         },
@@ -121,7 +108,8 @@ const config: Config = {
             },
             {
               label: 'Discord: zainabsiddiqui0115',
-              href: '#', // No direct link for username, use '#' or leave empty
+              href: '#',
+              target: '_blank',
             },
             {
               label: 'Gmail: zs833251@gmail.com',
@@ -137,7 +125,7 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
-  } satisfies Preset.ThemeConfig
+  } satisfies Preset.ThemeConfig,
 };
 
 export default config;
