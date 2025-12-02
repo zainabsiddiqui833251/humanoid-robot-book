@@ -25,6 +25,7 @@ const config: Config = {
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -36,7 +37,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          routeBasePath: '/',
+          routeBasePath: '/docs', // Changed this to '/docs' to avoid duplicate route with baseUrl
         },
         blog: {
           showReadingTime: true,
@@ -89,31 +90,6 @@ const config: Config = {
             {
               label: 'GitHub',
               href: 'https://github.com/zainabsiddiqui833251',
-              target: '_blank',
-            },
-            {
-              label: 'LinkedIn',
-              href: 'https://www.linkedin.com/in/zainab-siddiqui-822139283?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
-              target: '_blank',
-            },
-            {
-              label: 'X (Twitter)',
-              href: 'https://x.com/sidd94699?t=8RNf5q30qQGMD2ZVp2ojXw&s=09',
-              target: '_blank',
-            },
-            {
-              label: 'YouTube',
-              href: 'https://youtube.com/@zainabsiddiqui511?si=domrRRUq30qQGMD2ZVp2ojXw',
-              target: '_blank',
-            },
-            {
-              label: 'Discord: zainabsiddiqui0115',
-              href: '#',
-              target: '_blank',
-            },
-            {
-              label: 'Gmail: zs833251@gmail.com',
-              href: 'mailto:zs833251@gmail.com',
               target: '_blank',
             },
           ],
